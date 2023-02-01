@@ -4,25 +4,26 @@ import { getSearchResults } from './api/getSearchResults';
 import { useDebounceValue } from './hooks/useDebounceValue';
 
 function App() {
-  
+
 	const [query, setQuery] = useState<string>('');
 
 	// Start Search Without Debounce The Query Implementation
 	const [searchedValues, setSearchedValues] = useState<string[]>([]);
 
 	useEffect(() => {
-		/* Here I Used IIFE Cause async function cannot be passed to useEffect Hook,
-      So IIFE  unlock the potential to use async-await syntax inside the useeffect hook. 
-    */
+
+		const controller = new AbortController();
+		const signal = controller.signal;
 
 		(async () => {
 			setSearchedValues([]);
 			if (query.trim() !== '') {
-				const searchedData = await getSearchResults(query);
+				const searchedData = await getSearchResults(query, signal);
 				setSearchedValues(searchedData);
 			}
 		})();
 
+		return () => controller.abort('Cancel Previous Request');
 	}, [query]);
 	// End Search Without Debounce The Query Implementation
 
@@ -31,6 +32,7 @@ function App() {
 	const deboundedQuery = useDebounceValue(query);
 
 	useEffect(() => {
+
 		const controller = new AbortController();
 		const signal = controller.signal;
 
@@ -47,7 +49,7 @@ function App() {
 		})();
 
 		// This Abort is Beacuse If we Already made a request which take some time more than the new one, abort the old one when the useEffect clean up
-		// return () => controller.abort('Cancel Previous Request');
+		return () => controller.abort('Cancel Previous Request');
 
 		// Or Another Way To Abort To use Flag
 

@@ -34,6 +34,8 @@ export function getSearchResults(query: string, signal?: AbortSignal): Promise<s
 				reject(signal.reason);
 			}
 			resolve(fruits.filter((fruit) => fruit.toLowerCase().includes(query.toLowerCase())));
-		}, Math.random() * 1000); // This Timeout to Mock a slow API Request
+		}, 200);
+		// OR 
+		// }, Math.random() * 1000); // This Timeout to Mock a slow API Request
 	});
 }
