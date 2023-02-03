@@ -1,3 +1,3 @@
 # More-About-React
-My React Playground to test and check different concepts in react
+My React Playground to test and compare different concepts in react
 
